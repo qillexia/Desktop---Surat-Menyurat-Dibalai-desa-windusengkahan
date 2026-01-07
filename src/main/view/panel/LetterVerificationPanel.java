@@ -102,6 +102,13 @@ public class LetterVerificationPanel extends JPanel {
                 return;
             }
             String currentStatus = (String) table.getValueAt(row, 4);
+
+            if ("Disetujui".equalsIgnoreCase(currentStatus)) {
+                JOptionPane.showMessageDialog(this, "Surat sudah disetujui oleh Kades, tidak dapat diubah lagi!",
+                        "Akses Dibatasi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             if (!"Menunggu".equalsIgnoreCase(currentStatus) && !"Ditolak".equalsIgnoreCase(currentStatus)) { // Assuming
                                                                                                              // re-validation
                                                                                                              // is
@@ -125,6 +132,13 @@ public class LetterVerificationPanel extends JPanel {
                 return;
             }
             String currentStatus = (String) table.getValueAt(row, 4);
+
+            if ("Disetujui".equalsIgnoreCase(currentStatus)) {
+                JOptionPane.showMessageDialog(this, "Status sudah disetujui oleh kades",
+                        "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Kades Requirement: Must be verified by staff (Status == Valid)
             if (!"Valid".equalsIgnoreCase(currentStatus)) {
                 JOptionPane.showMessageDialog(this,
@@ -142,6 +156,17 @@ public class LetterVerificationPanel extends JPanel {
                 return;
             }
             String currentStatus = (String) table.getValueAt(row, 4);
+
+            if ("Disetujui".equalsIgnoreCase(currentStatus)) {
+                if ("kades".equalsIgnoreCase(currentUser.getRole())) {
+                    JOptionPane.showMessageDialog(this, "Status sudah disetujui oleh kades",
+                            "Info", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Surat sudah disetujui oleh Kades, tidak dapat diubah lagi!",
+                            "Akses Dibatasi", JOptionPane.WARNING_MESSAGE);
+                }
+                return;
+            }
 
             // Kades Requirement: Must be verified by staff (Status == Valid)
             if ("kades".equalsIgnoreCase(currentUser.getRole()) && !"Valid".equalsIgnoreCase(currentStatus)) {
