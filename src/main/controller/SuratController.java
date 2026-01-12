@@ -64,6 +64,30 @@ public class SuratController {
         }
     }
 
+    public static Surat getSuratById(int id) {
+        Surat s = null;
+        try (Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM surat WHERE id = ?")) {
+
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    s = new Surat();
+                    s.setId(rs.getInt("id"));
+                    s.setNik(rs.getString("nik"));
+                    s.setNamaPemohon(rs.getString("nama_pemohon"));
+                    s.setJenisSurat(rs.getString("jenis_surat"));
+                    s.setTanggalRequest(rs.getDate("tanggal_request"));
+                    s.setStatus(rs.getString("status"));
+                    s.setKeperluan(rs.getString("keperluan"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
     public static Map<String, Integer> getStats() {
         Map<String, Integer> stats = new HashMap<>();
         // Initialize 0

@@ -10,6 +10,9 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
+        // Set Locale to Indonesia for Metric units in Dialogs (cm/mm)
+        java.util.Locale.setDefault(new java.util.Locale("id", "ID"));
+
         // Test Database Connection
         System.out.println("----------------------------------------");
         System.out.println("[System] Memulai Aplikasi...");

@@ -187,8 +187,101 @@ public class LetterVerificationPanel extends JPanel {
             }
             String status = (String) table.getValueAt(row, 4);
             if ("Disetujui".equalsIgnoreCase(status)) {
-                JOptionPane.showMessageDialog(this, "Mencetak Surat... (Simulasi)\nHarap tunggu printer.", "Print",
-                        JOptionPane.INFORMATION_MESSAGE);
+                // Fetch full details
+                int id = (int) table.getValueAt(row, 0);
+                main.model.Surat surat = main.controller.SuratController.getSuratById(id);
+
+                if (surat == null) {
+                    JOptionPane.showMessageDialog(this, "Data surat tidak ditemukan!");
+                    return;
+                }
+
+                // Create Official Letter View
+                JTextPane printPane = new JTextPane();
+                printPane.setContentType("text/html");
+                printPane.setText("<html>" +
+                        "<head><style>" +
+                        "body { font-family: 'Times New Roman', serif; padding: 30px; font-size: 12pt; }" +
+                        ".header-container { text-align: center; width: 100%; }" +
+                        ".header-main { font-weight: bold; font-size: 16pt; margin: 0; }" +
+                        ".header-sub { font-weight: bold; font-size: 14pt; margin: 0; }" +
+                        ".address { font-size: 11pt; margin-top: 5px; font-style: italic; }" +
+                        ".line { border-bottom: 3px double black; margin-top: 5px; margin-bottom: 10px; }" +
+                        ".title { text-align: center; text-decoration: underline; font-weight: bold; font-size: 14pt; margin-bottom: 2px; }"
+                        +
+                        ".nomor { text-align: center; font-size: 12pt; margin-bottom: 15px; }" +
+                        ".content { margin-left: 20px; margin-right: 20px; }" +
+                        "p { margin-bottom: 4px; line-height: 1.1; text-align: justify; }" +
+                        "table { width: 100%; margin-top: 5px; margin-bottom: 5px; border-collapse: collapse; }" +
+                        "td { vertical-align: top; padding: 1px; }" +
+                        "</style></head>" +
+                        "<body>" +
+
+                        "<div class='header-container'>" +
+                        "<div class='header-main'>PEMERINTAH KABUPATEN KUNINGAN</div>" +
+                        "<div class='header-sub'>KECAMATAN KUNINGAN</div>" +
+                        "<div class='header-sub'>KELURAHAN WINDUSENGKAHAN</div>" +
+                        "<div class='address'>Jl. Subur Kode Pos 45515</div>" +
+                        "</div>" +
+                        "<div class='line'></div>" +
+
+                        "<div class='title'>SURAT KETERANGAN " + surat.getJenisSurat().toUpperCase() + "</div>" +
+                        "<div class='nomor'>Nomor: 470 / " + surat.getId() + " / DS / "
+                        + java.time.Year.now().getValue() + "</div>" +
+
+                        "<p style='margin-top: 10px;'>Yang bertanda tangan di bawah ini Kepala Desa Windusengkahan, Kecamatan Kuningan, Kabupaten Kuningan, menerangkan bahwa:</p>"
+                        +
+
+                        "<div class='content'>" +
+                        "<table>" +
+                        "<tr><td width='130'>Nama</td><td width='10'>:</td><td><b>" + surat.getNamaPemohon()
+                        + "</b></td></tr>" +
+                        "<tr><td>Tempat/Tgl Lahir</td><td>:</td><td>Kuningan, 01 Januari 1990</td></tr>" +
+                        "<tr><td>NIK</td><td>:</td><td>" + surat.getNik() + "</td></tr>" +
+                        "<tr><td>Jenis Kelamin</td><td>:</td><td>Laki-laki</td></tr>" +
+                        "<tr><td>Agama</td><td>:</td><td>Islam</td></tr>" +
+                        "<tr><td>Pekerjaan</td><td>:</td><td>Wiraswasta</td></tr>" +
+                        "<tr><td>Alamat</td><td>:</td><td>Desa Windusengkahan RT 01 RW 01</td></tr>" +
+                        "</table>" +
+                        "</div>" +
+
+                        "<p>Bahwa nama yang tercantum di atas adalah benar-benar berdomisili di Desa Windusengkahan, Kecamatan Kuningan. Sepanjang pengamatan kami dan sesuai data yang ada dalam catatan kependudukan, orang tersebut adalah warga berkelakuan baik.</p>"
+                        +
+
+                        "<p>Surat keterangan ini diberikan untuk keperluan: <b>" + surat.getKeperluan() + "</b>.</p>" +
+
+                        "<p>Demikian surat keterangan ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>"
+                        +
+
+                        "<table style='width: 100%; margin-top: 20px; page-break-inside: avoid;'>" +
+                        "<tr>" +
+                        "<td width='50%'></td>" +
+                        "<td width='50%' align='center'>" +
+                        "Windusengkahan, "
+                        + java.time.format.DateTimeFormatter.ofPattern("dd MMMM yyyy", new java.util.Locale("id", "ID"))
+                                .format(java.time.LocalDate.now())
+                        + "<br>" +
+                        "Kepala Desa<br><br><br><br><br>" +
+                        "<b><u>DIDI SUPARDI</u></b>" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>" +
+
+                        "</body></html>");
+
+                try {
+                    // Set Print Attributes (A4 Size & Metric Margins)
+                    javax.print.attribute.PrintRequestAttributeSet attr = new javax.print.attribute.HashPrintRequestAttributeSet();
+                    attr.add(javax.print.attribute.standard.MediaSizeName.ISO_A4);
+                    // Margins: 15mm all sides
+                    attr.add(new javax.print.attribute.standard.MediaPrintableArea(15, 15, 180, 267,
+                            javax.print.attribute.standard.MediaPrintableArea.MM));
+
+                    printPane.print(null, null, true, null, attr, true);
+                } catch (java.awt.print.PrinterException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Gagal mencetak: " + ex.getMessage());
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hanya surat yang sudah DISETUJUI yang bisa dicetak!",
                         "Gagal Cetak", JOptionPane.WARNING_MESSAGE);
