@@ -18,8 +18,32 @@ public class LoginView extends JFrame {
         setLayout(new BorderLayout());
 
         // Left Panel (Branding)
-        JPanel leftPanel = new JPanel();
-        leftPanel.setBackground(AppTheme.COLOR_PRIMARY);
+        JPanel leftPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // 1. Gradient Background (Primary -> Accent)
+                GradientPaint gp = new GradientPaint(0, 0, AppTheme.COLOR_PRIMARY,
+                        getWidth(), getHeight(), AppTheme.COLOR_ACCENT);
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+
+                // 2. Decorative 2D Shapes (Semi-transparent)
+                g2d.setColor(new Color(255, 255, 255, 20)); // Very subtle white
+                g2d.fillOval(-50, -50, 250, 250); // Top-left circle
+
+                g2d.setColor(new Color(255, 255, 255, 15));
+                g2d.fillOval(getWidth() - 150, getHeight() / 2 - 50, 400, 400); // Right side big circle
+
+                g2d.setColor(new Color(255, 255, 255, 10));
+                g2d.fillOval(40, getHeight() - 100, 100, 100); // Bottom small circle
+            }
+        };
+        // leftPanel.setBackground(AppTheme.COLOR_PRIMARY); // Not strictly needed as we
+        // paint over, but kept implicitly
         leftPanel.setLayout(new GridBagLayout());
         leftPanel.setPreferredSize(new Dimension(400, 600));
 
