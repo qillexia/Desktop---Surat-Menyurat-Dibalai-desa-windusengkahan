@@ -85,6 +85,14 @@ public class DashboardView extends JFrame {
             addMenuButton(sidebar, "Manajemen User", "\u265F", "Manajemen User"); // PAWN (User-like)
         }
 
+        // --- ADDED PRINT BUTTON ---
+        if ("admin".equals(role) || "kades".equals(role) || "staff".equals(role)) {
+            JButton printBtn = createMenuButton("Cetak Laporan", "\uD83D\uDDA8"); // PRINTER
+            printBtn.addActionListener(e -> main.util.ReportManager.printLaporanSurat());
+            sidebar.add(printBtn);
+            sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
         sidebar.add(Box.createVerticalGlue()); // Push Logout to bottom
 
         JButton logoutBtn = createMenuButton("Keluar", "\u2716"); // HEAVY X

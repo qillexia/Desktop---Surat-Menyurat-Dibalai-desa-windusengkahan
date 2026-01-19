@@ -7,5 +7,10 @@ if %errorlevel% neq 0 (
     pause
     exit /b
 )
+
+echo Copying resources...
+xcopy /s /y "src\*.jrxml" "bin\" >nul
+xcopy /s /y "src\*.png" "bin\" >nul 2>&1
+
 echo Running...
 java -cp "bin;lib/*" main.Main
